@@ -9,3 +9,21 @@ val Pink80 = Color(0xFFEFB8C8)
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
+
+val Primary500 = Color(0xFF2196F3)
+
+val Primary600 = Color(0xFF1976D2)
+
+val Primary100 = Color(0xFFE3F2FD)
+
+val Secondary500 = Color(0xFF28C6A9)
+
+val Gray900 = Color(0xFF1A1A1A)
+
+val Gray700 = Color(0xFF424242)
+
+val Gray500 = Color(0xFF9E9E9E)
+
+val Gray200 = Color(0xFFEEEEEE)
+
+val Gray50 = Color(0xFFFAFAFA)
