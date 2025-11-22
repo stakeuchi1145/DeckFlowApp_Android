@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) { innerPadding ->
                     print("Inner padding: $innerPadding")
-                    LoginScreen(innerPadding, loginViewModel)
+                    LoginScreen(innerPadding)
                 }
             }
         }
