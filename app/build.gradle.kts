@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,6 +23,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties()
+        localProperties.load(rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "url", "\"${localProperties.getProperty("BASE_URL")}\"")
     }
 
     buildTypes {
@@ -41,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -70,4 +77,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.3.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Gson converter
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }

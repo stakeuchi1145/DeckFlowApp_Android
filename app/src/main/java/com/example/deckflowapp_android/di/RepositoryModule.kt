@@ -1,5 +1,6 @@
 package com.example.deckflowapp_android.di
 
+import com.example.deckflowapp_android.api.UserAPIService
 import com.example.deckflowapp_android.repository.ILoginRepository
 import com.example.deckflowapp_android.repository.LoginRepository
 import dagger.Module
@@ -13,7 +14,7 @@ import javax.inject.Singleton
 class RepositoryModule {
     @Provides
     @Singleton
-    fun provideLoginRepository(): ILoginRepository {
-        return LoginRepository()
+    fun provideLoginRepository(userApiService: UserAPIService): ILoginRepository {
+        return LoginRepository(userApiService)
     }
 }

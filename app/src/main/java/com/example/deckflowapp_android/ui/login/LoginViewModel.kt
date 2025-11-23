@@ -10,7 +10,7 @@ import jakarta.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: ILoginRepository? = null
+    private val loginRepository: ILoginRepository?
 ): ViewModel() {
     private val TAG = "LoginViewModel"
     val email = mutableStateOf("")
@@ -30,23 +30,18 @@ class LoginViewModel @Inject constructor(
         isVisiblePassword.value = isVisible
     }
 
-    suspend fun login(): LoginUser? {
+    suspend fun login(): Boolean {
         Log.d(TAG, "login: ${email.value} / ${password.value}")
 
         try {
-            val user = loginRepository?.login(email.value, password.value)
+            val token = loginRepository?.login(email.value, password.value)
 
-            Log.d(TAG, "login: user=${user?.uid}")
-            return LoginUser(
-                id = "",
-                name = "",
-                email = "",
-                uuid = user?.uid ?: ""
-            )
+            Log.d(TAG, "login: user=${token}")
+            return token?.isNotEmpty() ?: false
         } catch (e: Exception) {
             Log.e(TAG, "login: error=${e.message}" )
         }
 
-        return null
+        return false
     }
 }

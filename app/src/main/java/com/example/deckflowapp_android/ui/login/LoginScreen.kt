@@ -1,6 +1,7 @@
 package com.example.deckflowapp_android.ui.login
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -43,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(innerPadding: PaddingValues, viewModel: LoginViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -138,8 +141,11 @@ fun LoginScreen(innerPadding: PaddingValues, viewModel: LoginViewModel = hiltVie
                     onClick = {
                         scope.launch { scope
                             Log.d("LoginScreen", "userId: ${viewModel.email}, password: ${viewModel.password}")
-                            val uuid = viewModel.login()
-                            Log.d("LoginScreen", "uuid: $uuid")
+                            if (viewModel.login()) {
+                                showToast(context, "ログインに成功しました")
+                            } else {
+                                showToast(context, "ログインに失敗しました")
+                            }
                         }
                     },
                     modifier = Modifier
@@ -156,6 +162,10 @@ fun LoginScreen(innerPadding: PaddingValues, viewModel: LoginViewModel = hiltVie
             }
         }
     }
+}
+
+fun showToast(context: android.content.Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
 @Preview(device = PIXEL_6)
