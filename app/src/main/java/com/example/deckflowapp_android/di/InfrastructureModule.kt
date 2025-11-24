@@ -6,8 +6,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -15,11 +19,36 @@ import javax.inject.Singleton
 class InfrastructureModule {
     @Provides
     @Singleton
-    fun providedRetrofitInstance(): Retrofit {
+    fun providedOkHttpClient(): OkHttpClient {
+        val httpClient = OkHttpClient
+            .Builder()
+            .addInterceptor(Interceptor { chain ->
+                val original = chain.request()
+                val request = original.newBuilder()
+                    .header("Accept", "application/json")
+                    .method(original.method, original.body)
+                    .build()
+
+                var response = chain.proceed(request)
+                return@Interceptor response
+            })
+            .readTimeout(30, TimeUnit.SECONDS)
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpClient.addInterceptor(loggingInterceptor)
+
+        return httpClient.build()
+    }
+
+    @Provides
+    @Singleton
+    fun providedRetrofitInstance(client: OkHttpClient): Retrofit {
         // Placeholder for actual Retrofit instance provision
         return Retrofit.Builder()
             .baseUrl(BuildConfig.url)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build()
     }
 

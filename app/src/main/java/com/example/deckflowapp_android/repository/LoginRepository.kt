@@ -3,8 +3,10 @@ package com.example.deckflowapp_android.repository
 import android.util.Log
 import com.example.deckflowapp_android.api.UserAPIService
 import com.example.deckflowapp_android.api.request.LoginRequest
+import com.example.deckflowapp_android.module.LoginUser
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,37 +25,64 @@ class LoginRepository @Inject constructor(
 
     override suspend fun login(email: String, password: String) =
         withContext(Dispatchers.IO) {
-            try {
-                userApiService.login(LoginRequest(email, password))?.let { response ->
-                    Log.d(TAG, "login: API called: response=$response")
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "login: API success")
-                        response.body()?.let { loginResponse ->
-                            Log.d(TAG, "login: Token ${loginResponse.token}")
-                            return@withContext suspendCoroutine { continuation ->
-                                auth.signInWithCustomToken(loginResponse.token)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            Log.d(TAG, "login: success")
-                                            continuation.resume(loginResponse.token)
-                                        } else {
-                                            Log.e(TAG, "signInWithEmail:failure", task.exception)
-                                            continuation.resumeWithException(
-                                                task.exception ?: Exception("Authentication failed")
-                                            )
-                                        }
-                                    }
-                            }
+            return@withContext suspendCoroutine { continuation ->
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            continuation.resume(true)
+                        } else {
+                            Log.e(TAG, "signInWithEmail:failure", task.exception)
+                            continuation.resumeWithException(
+                                task.exception ?: Exception("Authentication failed")
+                            )
                         }
-                    } else {
-                        Log.e(TAG, "login: API failure ${response.errorBody()?.string()}")
+                    }
+            }
+        }
+
+    override suspend fun getToken(): String? =
+        withContext(Dispatchers.IO) {
+            return@withContext suspendCoroutine { continuation ->
+                auth.currentUser?.let { user ->
+                    user.getIdToken(true).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            continuation.resume(task.result?.token ?: "")
+                        } else {
+                            Log.e(TAG, "getToken:failure", task.exception)
+                            continuation.resumeWithException(
+                                task.exception ?: Exception("Authentication failed")
+                            )
+                        }
+                    }
+                } ?: continuation.resumeWithException(Exception("Authentication failed"))
+            }
+        }
+
+    override suspend fun getUserInfo(token: String): String? =
+        withContext(Dispatchers.IO) {
+            try {
+                userApiService.getUser(token = "Bearer $token")?.let { response ->
+                    if (response.isSuccessful) {
+                        response.body()?.let { userResponse ->
+                            return@withContext userResponse.displayName
+                        }
                     }
                 }
             } catch (error: Exception) {
-                Log.e(TAG, "login: Exception $error")
+                Log.e(TAG, "getCurrentUser: Exception $error")
                 throw error
             }
 
-            return@withContext ""
+            return@withContext null
+        }
+
+    override suspend fun logout() =
+        withContext(Dispatchers.IO) {
+            return@withContext suspendCoroutine { continuation ->
+                Log.d(TAG, "current user before signOut: ${auth.currentUser}")
+                auth.signOut()
+                Log.d(TAG, "current user after signOut: ${auth.currentUser}")
+                continuation.resume(Unit)
+            }
         }
 }

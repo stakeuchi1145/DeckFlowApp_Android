@@ -12,9 +12,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class RepositoryModule {
+    private val loginRepository: ILoginRepository? = null
+
     @Provides
     @Singleton
     fun provideLoginRepository(userApiService: UserAPIService): ILoginRepository {
+        if (loginRepository != null) {
+            return loginRepository
+        }
+
         return LoginRepository(userApiService)
     }
 }
