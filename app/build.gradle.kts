@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,6 +23,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProperties = Properties()
+        localProperties.load(rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "url", "\"${localProperties.getProperty("BASE_URL")}\"")
     }
 
     buildTypes {
@@ -41,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -61,7 +68,23 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.dagger:hilt-android:2.57.1")
     ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.3.0")
+    implementation("androidx.compose.material:material-icons-core:1.0.0")
+    implementation("androidx.compose.material:material-icons-extended:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // Gson converter
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
+
+//    val okhttp_version = '3.11.0'
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 }
