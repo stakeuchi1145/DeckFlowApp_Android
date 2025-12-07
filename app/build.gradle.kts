@@ -87,4 +87,6 @@ dependencies {
 //    val okhttp_version = '3.11.0'
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }
