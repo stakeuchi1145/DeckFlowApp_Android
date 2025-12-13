@@ -158,7 +158,9 @@ fun LoginScreen(innerPadding: PaddingValues, navController: NavController, viewM
                         scope.launch { scope
                             loading = true
                             if (viewModel.login()) {
-                                navController.navigate("home")
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                }
                                 viewModel.clearInput()
                             } else {
                                 viewModel.showDialog(
@@ -240,6 +242,10 @@ fun showDialog(
 @Composable
 fun LoginScreenPreview() {
     class FakeLoginRepository : ILoginRepository {
+        override suspend fun getCurrentUser(): Boolean {
+            TODO("Not yet implemented")
+        }
+
         override suspend fun login(email: String, password: String): Boolean {
             TODO("Not yet implemented")
         }

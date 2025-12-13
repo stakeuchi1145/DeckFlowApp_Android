@@ -122,7 +122,9 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController, viewMo
                                 expanded = false
                                 scope.launch {
                                     viewModel.logout()
-                                    navController.navigate("login")
+                                    navController.navigate("login") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
                                 }
                             }
                         )
@@ -330,6 +332,10 @@ fun HomeBottomBar(viewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 fun HomeScreenPreview() {
     class FakeLoginRepository : ILoginRepository {
+        override suspend fun getCurrentUser(): Boolean {
+            TODO("Not yet implemented")
+        }
+
         override suspend fun login(email: String, password: String): Boolean {
             TODO("Not yet implemented")
         }
