@@ -27,6 +27,7 @@ android {
         val localProperties = Properties()
         localProperties.load(rootProject.file("local.properties").inputStream())
         buildConfigField("String", "url", "\"${localProperties.getProperty("BASE_URL")}\"")
+        buildConfigField("String", "imageUrl", "\"${localProperties.getProperty("BASE_URL_IMAGE")}\"")
     }
 
     buildTypes {

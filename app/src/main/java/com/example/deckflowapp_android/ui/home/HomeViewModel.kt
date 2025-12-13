@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.deckflowapp_android.BuildConfig
 import com.example.deckflowapp_android.module.Card
 import com.example.deckflowapp_android.repository.ICardRepository
 import com.example.deckflowapp_android.repository.ILoginRepository
@@ -45,16 +46,14 @@ class HomeViewModel @Inject constructor(
             cardList.clear()
 
             try {
-                Log.d(TAG, "fetchCards()")
                 val response = cardRepository.getCards(loginUserService.getToken() ?: "")
-                Log.d(TAG, "Fetched cards: $response")
                 if (response.isNotEmpty()) {
                     response.forEach { myCards ->
                         val card = Card(
                             id = myCards.id,
                             name = myCards.cardName,
                             packName = myCards.packName,
-                            imageUrl = myCards.imageURL,
+                            imageUrl = BuildConfig.imageUrl + myCards.imageURL,
                             quantity = myCards.quantity
                         )
 
@@ -70,6 +69,12 @@ class HomeViewModel @Inject constructor(
 
     fun onSearchTextChange(newText: String) {
         searchText.value = newText
+    }
+
+    fun searchCards(): List<Card> {
+        return cardList.filter { card ->
+            card.name.contains(searchText.value, ignoreCase = true)
+        }
     }
 
     fun getUserName(): String {
