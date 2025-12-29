@@ -286,7 +286,9 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController, viewMo
         contentAlignment = Alignment.BottomEnd
     ) {
         FloatingActionButton(
-            onClick = {},
+            onClick = {
+                navController.navigate("register_my_card")
+            },
             modifier = Modifier
                 .padding(20.dp),
             shape = CircleShape,

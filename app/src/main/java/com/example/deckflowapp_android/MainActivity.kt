@@ -41,7 +41,7 @@ import com.example.deckflowapp_android.repository.ILoginRepository
 import com.example.deckflowapp_android.service.LoginUserService
 import com.example.deckflowapp_android.ui.home.HomeScreen
 import com.example.deckflowapp_android.ui.login.LoginScreen
-import com.example.deckflowapp_android.ui.login.LoginViewModel
+import com.example.deckflowapp_android.ui.mycard.register.MyCardRegisterScreen
 import com.example.deckflowapp_android.ui.theme.DeckFlowApp_AndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -80,6 +80,7 @@ fun DisplayNav() {
             composable("launch") { LaunchAppScreen(innerPadding, navController) }
             composable("login") { LoginScreen(innerPadding, navController) }
             composable("home") { HomeScreen(innerPadding, navController) }
+            composable("register_my_card") { MyCardRegisterScreen(innerPadding, navController) }
         }
     }
 }
