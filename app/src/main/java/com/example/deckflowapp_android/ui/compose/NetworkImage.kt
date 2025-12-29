@@ -15,6 +15,7 @@ import coil.request.ImageRequest
 @Composable
 fun NetworkImage(
     url: String,
+    contentDescription: String? = null,
     modifier: Modifier = Modifier
 ) {
     Image(
@@ -24,7 +25,7 @@ fun NetworkImage(
                 .crossfade(true)
                 .build()
         ),
-        contentDescription = null,
+        contentDescription = contentDescription,
         modifier = modifier
             .size(100.dp)
             .clip(RoundedCornerShape(8.dp)),

@@ -13,20 +13,13 @@ class CardRepository @Inject constructor(
     private val apiService: CardAPIService
 ) : ICardRepository {
     override suspend fun getCards(token: String): List<CardInfo> = withContext(Dispatchers.IO) {
-        try {
-            Log.d("", "getCards()")
-            apiService.getUserCards("Bearer $token")?.let { response ->
-                Log.d("CardRepository", "API Response: $response")
-                if (response.isSuccessful) {
-                    response.body()?.let { cards ->
-                        return@withContext cards.myCards
-                    }
-                }
-            }
-        } catch (error: Exception) {
-            throw error
-        }
+        val response = apiService.getUserCards("Bearer $token") ?: throw IllegalStateException("API response is null")
+        Log.d("CardRepository", "API Response: $response")
 
-        return@withContext listOf()
+        if (response.isSuccessful) {
+            return@withContext response.body()?.myCards ?: throw IllegalStateException("Response body is null")
+        } else {
+            throw IllegalStateException("API call failed with code: ${response.code()}")
+        }
     }
 }

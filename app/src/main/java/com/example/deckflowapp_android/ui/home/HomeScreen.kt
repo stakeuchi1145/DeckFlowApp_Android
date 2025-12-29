@@ -1,6 +1,5 @@
 package com.example.deckflowapp_android.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +22,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -64,11 +61,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.deckflowapp_android.api.CardAPIService
-import com.example.deckflowapp_android.api.response.CardInfo
-import com.example.deckflowapp_android.repository.ICardRepository
-import com.example.deckflowapp_android.repository.ILoginRepository
-import com.example.deckflowapp_android.service.LoginUserService
 import com.example.deckflowapp_android.ui.compose.NetworkImage
 import com.example.deckflowapp_android.ui.theme.DeckFlowApp_AndroidTheme
 import kotlinx.coroutines.launch
@@ -158,14 +150,16 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController, viewMo
                         Row() {
                             Icon(
                                 Icons.Filled.Search,
-                                contentDescription = "search",
+                                contentDescription = "詳細を見る",
                                 tint = Color.Black,
                                 modifier = Modifier.padding(end = 4.dp)
                             )
 
-                            if (viewModel.searchText.value.isEmpty()) {
-                                Text(text = "検索", color = Color.Gray)
-                            } else {
+                            Box {
+                                if (viewModel.searchText.value.isEmpty()) {
+                                    Text(text = "検索", color = Color.Gray)
+                                }
+
                                 innerTextField()
                             }
                         }
@@ -294,7 +288,7 @@ fun HomeScreen(innerPadding: PaddingValues, navController: NavController, viewMo
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            Icon(Icons.Filled.Add, "")
+            Icon(Icons.Filled.Add, "カードを追加")
         }
     }
 
@@ -333,35 +327,7 @@ fun HomeBottomBar(viewModel: HomeViewModel = hiltViewModel()) {
 @Preview(device = PIXEL_6)
 @Composable
 fun HomeScreenPreview() {
-    class FakeLoginRepository : ILoginRepository {
-        override suspend fun getCurrentUser(): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun login(email: String, password: String): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getToken(): String? {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun getUserInfo(token: String): String? {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun logout() {
-            TODO("Not yet implemented")
-        }
-    }
-
-    class FakeCardRepository() : ICardRepository {
-        override suspend fun getCards(token: String): List<CardInfo> {
-            return listOf()
-        }
-    }
-
-    val viewModel = HomeViewModel(FakeLoginRepository(), FakeCardRepository(), LoginUserService())
+    val viewModel = hiltViewModel<HomeViewModel>()
     val navController = rememberNavController()
     DeckFlowApp_AndroidTheme {
         Scaffold(

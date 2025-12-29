@@ -46,7 +46,12 @@ class HomeViewModel @Inject constructor(
             cardList.clear()
 
             try {
-                val response = cardRepository.getCards(loginUserService.getToken() ?: "")
+                val token = loginUserService.getToken() ?: run {
+                    _uiState.value = HomeUiState.Error(message = "認証トークンがありません。再ログインしてください。")
+                    return@launch
+                }
+
+                val response = cardRepository.getCards(token)
                 if (response.isNotEmpty()) {
                     response.forEach { myCards ->
                         val card = Card(
@@ -71,10 +76,12 @@ class HomeViewModel @Inject constructor(
         searchText.value = newText
     }
 
-    fun searchCards(): List<Card> {
-        return cardList.filter { card ->
+    fun searchCards() {
+        val cards = cardList.filter { card ->
             card.name.contains(searchText.value, ignoreCase = true)
         }
+
+        _uiState.value = HomeUiState.Success(data = cards)
     }
 
     fun getUserName(): String {
