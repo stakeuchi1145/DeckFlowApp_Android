@@ -27,6 +27,7 @@ android {
         val localProperties = Properties()
         localProperties.load(rootProject.file("local.properties").inputStream())
         buildConfigField("String", "url", "\"${localProperties.getProperty("BASE_URL")}\"")
+        buildConfigField("String", "imageUrl", "\"${localProperties.getProperty("BASE_URL_IMAGE")}\"")
     }
 
     buildTypes {
@@ -87,4 +88,6 @@ dependencies {
 //    val okhttp_version = '3.11.0'
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }

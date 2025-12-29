@@ -26,4 +26,4 @@ val Gray500 = Color(0xFF9E9E9E)
 
 val Gray200 = Color(0xFFEEEEEE)
 
-val Gray50 = Color(0xFFFAFAFA)
+val Gray50 = Color(0xFFF7F8FA)

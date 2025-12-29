@@ -23,6 +23,20 @@ class LoginRepository @Inject constructor(
     private val TAG = "LoginRepository"
     private var auth: FirebaseAuth = Firebase.auth
 
+    override suspend fun getCurrentUser(): Boolean =
+        withContext(Dispatchers.IO) {
+            return@withContext suspendCoroutine<Boolean> { continuation ->
+                val currentUser = auth.currentUser
+                continuation.resume(
+                    if (currentUser != null) {
+                        true
+                    } else {
+                        false
+                    }
+                )
+            }
+        }
+
     override suspend fun login(email: String, password: String) =
         withContext(Dispatchers.IO) {
             return@withContext suspendCoroutine { continuation ->

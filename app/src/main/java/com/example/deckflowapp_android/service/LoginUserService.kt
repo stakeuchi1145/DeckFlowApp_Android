@@ -16,6 +16,10 @@ class LoginUserService @Inject constructor() {
         return loginUser?.name
     }
 
+    fun getToken(): String? {
+        return loginUser?.token
+    }
+
     fun clearLoginUser() {
         this.loginUser = null
     }
