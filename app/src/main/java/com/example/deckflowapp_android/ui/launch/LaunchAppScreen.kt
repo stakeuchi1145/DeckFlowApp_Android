@@ -13,6 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,6 +33,22 @@ import com.example.deckflowapp_android.ui.theme.DeckFlowApp_AndroidTheme
 @Composable
 fun LaunchAppScreen(innerPadding: PaddingValues, navController: NavController, viewModel: MainViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(state) {
+        when(state) {
+            is MainUiState.Success -> {
+                navController.navigate("home") {
+                    popUpTo("launch") { inclusive = true }
+                }
+            }
+            is MainUiState.Error -> {
+                navController.navigate("login") {
+                    popUpTo("launch") { inclusive = true }
+                }
+            }
+            else -> {}
+        }
+    }
 
     when (state) {
         is MainUiState.Loading -> {
@@ -67,16 +84,7 @@ fun LaunchAppScreen(innerPadding: PaddingValues, navController: NavController, v
                 }
             }
         }
-        is MainUiState.Success -> {
-            navController.navigate("home") {
-                popUpTo("launch") { inclusive = true }
-            }
-        }
-        is MainUiState.Error -> {
-            navController.navigate("login") {
-                popUpTo("launch") { inclusive = true }
-            }
-        }
+        else -> {}
     }
 }
 

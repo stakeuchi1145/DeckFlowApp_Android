@@ -2,6 +2,7 @@ package com.example.deckflowapp_android
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.deckflowapp_android.module.Card
 import com.example.deckflowapp_android.repository.ILoginRepository
 import com.example.deckflowapp_android.service.LoginUserService
@@ -32,7 +33,7 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     init {
-        CoroutineScope(Dispatchers.Main).launch {
+        viewModelScope.launch {
             if (getUserInfo()) {
                 _uiState.value = MainUiState.Success("User info retrieved successfully")
             } else {
